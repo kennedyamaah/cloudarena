@@ -4,7 +4,16 @@ resource "aws_security_group" "jump_server" {
   description = "Security group for jump/bastion server"
   vpc_id      = aws_vpc.main.id
 
-  # No inbound rules (default deny all)
+  # Allow SSH from your IP with /16 CIDR
+  ingress {
+    description = "SSH from My IP"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["${var.my_ip}/16"]  # Will cover your entire /16 network
+  }
+
+  # Allow all outbound traffic
   egress {
     from_port   = 0
     to_port     = 0
